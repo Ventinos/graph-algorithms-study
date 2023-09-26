@@ -81,22 +81,24 @@ def hopcroftPontes(graph):
     return c
 
 #kosaraju:
+#dps de cada iteracao empilha o valor que foi usado:
 def dfsPosOrder(start,graph,visited,stack):
-    visited[start]=True
-    for i in graph[start]:
-        if not visited[i]:
-            stack=dfsPosOrder(i, graph, visited,stack)
-    stack.append(start)
-    return stack
+    if not visited[start]:
+        visited[start]=True
+        for i in graph[start]:
+            if not visited[i]:
+                dfsPosOrder(i, graph, visited,stack)
+        stack.append(start)
 
+#marca os roots:
 def dfsBase(start, graph,visited,root):
     visited[start]=True
     for i in graph[start]:
         if not visited[i]:
-            root=dfsBase(i,graph,visited,root)
-            root[i]=start
-    return root
+            root[i]=root[start]
+            dfsBase(i,graph,visited,root)
 
+#faz grafo transposto:
 def transpose(graph):
     graphT=[[]for _ in range(len(graph))]
     for w in range(0,len(graph)):
@@ -104,17 +106,35 @@ def transpose(graph):
             graphT[i].append(w)
     return graphT
 
-#terminar:
+#kosaraju de fato:
 def kosaraju(graph):
+    #transpose graph:
     graphT=transpose(graph)
+
+    #vetores que serao usados:
+    root=[]
     visited = len(graphT)*[False]
-    root=len(graph)*[0]
-    posOrder=dfsPosOrder(0, graphT, visited, [])
+    posOrder=[]
+
+    #root diz a que componente o vertice pertence:
+    for i in range(len(graph)):
+        root.append(i)
+    #no inicio todos os vertices pertencem às proprias componentes;
+
+    #arruma pilha em posOrdem do graphT com dfs:
+    for i in range(len(graph)):
+        dfsPosOrder(i,graph,visited,posOrder)
+
+    #desempilha a pilha de posOrdem e faz dfs nos itens:
+    visited = len(graph)*[False]
     while posOrder:
         i=posOrder.pop()
-        root=dfsBase(i,graph,visited,root)
-    return root
+        #esse dfs aqui salva no root a partir de quem o vertice foi acessado:
+        dfsBase(i,graph,visited,root)
 
-        
+    #retorna a quantidade de valores diferentes no root:
+    return len(set(root))
+
+
 
 
