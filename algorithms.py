@@ -134,6 +134,30 @@ def kosaraju(graph):
     #retorna a quantidade de valores diferentes no root:
     return len(set(root))
 
+#kruskal e geracao de mst's:
+def getRoot(ufds, i):
+    if ufds[i]==i:
+        return i
+    return getRoot(ufds,ufds[i])
 
+def kruskal(edgeList):
+    #ordenando a lista de arestas pelo peso em ordem crescente e estavel:
+    edgeList=sorted(edgeList,key=lambda x:x[2])
+    mst=[]
 
+    #inicializando o ufds:
+    ufds = []
+    for i in range(len(edgeList)):
+        ufds.append(i)
 
+    #pra toda aresta do grafo, se n formar ciclo, adiciona na mst e arruma o ufds:
+    for w in edgeList:
+        if ufds[w[0]] != ufds[w[1]]:
+            print('appending: '+str(w))
+            mst.append(w)
+            if w[0]!=w[1]:
+                u=getRoot(ufds,w[0])
+                ufds[w[1]]=u
+            print(ufds)
+
+    return mst
