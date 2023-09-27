@@ -22,6 +22,20 @@ def dfs2(start, graph):
                 visited[u]=True
                 stack.append(u)
 
+#dfs para lista de aresta:
+def dfsEdgeList(start, edgeList, visited):
+    stack=[]
+    visited.add(start)
+    stack.append(start)
+    while stack:
+        u = stack.pop()
+        for edge in edgeList:
+            if u in edge:
+                v = edge[0] if u==edge[1] else edge[1]
+                if v not in visited:
+                    visited.add(v)
+                    stack.append(v)
+
 #bfs nao recursivo:
 #igual o dfs nao recursivo, so trocar de pilha pra fila
 def bfs(start, graph):
@@ -54,7 +68,6 @@ def dfs3(start, graph,visited,removed):
 def components(graph,removed):
     visited = len(graph)*[False]
     count = 0
-    i=0
     for i in range(0,len(graph)):
         if not visited[i] and not removed[i]:
             dfs3(i,graph,visited,removed)
@@ -163,4 +176,62 @@ def kruskal(edgeList):
         if u != v:
             mst.append(w)
             ufds[u]=v
-    return mst
+    return mst;
+
+#arvore geradora maxima:
+def kruskalMAX(edgeList):
+    #ordenando a lista de arestas pelo peso em ordem crescente e estavel:
+    edgeList=sorted(edgeList,key=lambda x:x[2])
+    #literalmente so adicionei essa linha aqui pra ordenar em ordem decrescente:
+    edgeList.reverse()
+    mst=[]
+
+    #inicializando o ufds:
+    ufds = []
+    for i in range(len(edgeList)):
+        ufds.append(i)
+
+    #pra toda aresta do grafo, se n formar ciclo, adiciona na mst e arruma o ufds:
+    for w in edgeList:
+        u=getRoot(ufds,w[0])
+        v=getRoot(ufds,w[1])
+        if u != v:
+            mst.append(w)
+            ufds[u]=v
+    return mst;
+
+
+#wip! o print ta bem ruim e tem coisa pra arrumar
+#floresta geradora minima com k componentes
+def componentsMSF(msf):
+    visited=set()
+    count=0
+    for edge in msf:
+        for u in edge:
+            if u not in visited:
+                dfsEdgeList(u,msf,visited)
+                count+=1
+    return count
+
+def kmsf(edgeList,k):
+    #ordenando a lista de arestas pelo peso em ordem crescente e estavel:
+    edgeList=sorted(edgeList,key=lambda x:x[2])
+    msf=[]
+
+    #inicializando o ufds:
+    ufds = []
+    for i in range(len(edgeList)):
+        ufds.append(i)
+
+    #pra toda aresta do grafo, se n formar ciclo, adiciona na mst e arruma o ufds:
+    for w in edgeList:
+        u=getRoot(ufds,w[0])
+        v=getRoot(ufds,w[1])
+        if u != v:
+            msf.append(w)
+            ufds[u]=v
+            comp=componentsMSF(msf)
+            if comp == k:
+                break
+    return msf
+
