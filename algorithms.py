@@ -138,7 +138,13 @@ def kosaraju(graph):
 def getRoot(ufds, i):
     if ufds[i]==i:
         return i
-    return getRoot(ufds,ufds[i])
+    i = getRoot(ufds,ufds[i])
+    return i
+
+def isConnected(ufds,i,j):
+    u = getRoot(ufds,i)
+    v = getRoot(ufds,j)
+    return u==v
 
 def kruskal(edgeList):
     #ordenando a lista de arestas pelo peso em ordem crescente e estavel:
@@ -152,12 +158,9 @@ def kruskal(edgeList):
 
     #pra toda aresta do grafo, se n formar ciclo, adiciona na mst e arruma o ufds:
     for w in edgeList:
-        if ufds[w[0]] != ufds[w[1]]:
-            print('appending: '+str(w))
+        u=getRoot(ufds,w[0])
+        v=getRoot(ufds,w[1])
+        if u != v:
             mst.append(w)
-            if w[0]!=w[1]:
-                u=getRoot(ufds,w[0])
-                ufds[w[1]]=u
-            print(ufds)
-
+            ufds[u]=v
     return mst
