@@ -13,6 +13,7 @@ visited = 5*[False]
 
 print(graph1)
 print(graph2)
+print(algo.bfsColor(0,[[3,1,4],[],[3],[2,4],[0,3]]))
 
 print('\ndfs rec:')
 algo.dfs(0,graph1,visited)
