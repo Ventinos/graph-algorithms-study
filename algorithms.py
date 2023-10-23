@@ -232,3 +232,67 @@ def kmsf(edgeList,k):
             if comp == k:
                 break
     return msf
+
+#Minimum distance:
+#Min distance with bfs:
+#if this return -1, it means that end is unreachable from start;
+def bfsMinDistance(graph,startV,endV):
+    #initializing arrays:
+    distance = [-1]*len(graph)
+    visited = [False]*len(graph)
+    queue = [startV]
+    visited[startV]=True
+    distance[startV]=0
+    while queue:
+        w=queue.pop(0)
+        for u in graph[w]:
+            if not visited[u]:
+                visited[u]=True
+                queue.append(u)
+                distance[u]=distance[w]+1
+    #return minimum distance from start to end:
+    return distance[endV]
+
+#Min Distance for DAG's (Directed Acyclic Graph) pondered:
+#we use a topologic ordenation of the vertices in this one, so
+def topologicOrd(graph):
+    stack=[0]
+    visited=[False]*len(graph)
+    visited[0]=True
+    topOrd=[]
+    while stack:
+        w=stack.pop()
+        topOrd.append(w)
+        for (v,p) in graph[w]:
+            if not visited[v]:
+                stack.append(v)
+                visited[v]=True
+    return topOrd
+
+def DAGMinDist(graph,startV):
+    dist = [999999]*len(graph)
+    ordTop = topologicOrd(graph)
+    dist[startV] = 0;
+    for u in ordTop:
+        for (v,p) in graph[u]:
+            dist[v] = dist[u]+p if dist[u]+p < dist[v] else dist[v]
+    return dist
+
+#Djikstra implemented using a BST:
+def djikstraBST(graph,startV):
+    dist = [999999]*len(graph)
+    dist[startV] = 0
+    pq = set(())
+    
+    for i in range(len(graph)):
+        pq.add((i,dist[i]))
+
+    while pq:
+        (u,dista)=pq.pop()
+        for (v,p) in graph[u]:
+            if dista+p <= dist[v]: 
+                pq.discard((v,dist[v]))
+                dist[v]=dista+p
+                pq.add((v,dist[v]))
+    return dist
+
