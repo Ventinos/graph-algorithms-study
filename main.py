@@ -10,7 +10,7 @@ edgeList2 = [(0,1,10),(1,2,10),(1,6,8),(1,7,13),(2,3,10),(2,7,8),(2,8,13),(3,4,1
 edgeList3 = [(0,1,9),(0,2,75),(1,2,95),(1,3,19),(1,4,42),(2,3,51),(3,4,31)]
 
 dag1 = [[(1,2),(2,3),(3,4)],[(2,3),(3,4)],[(3,4)],[]]
-
+maxFlowTest = [[(1,4)],[(2,7)],[(3,3)],[]]
 visited = 5*[False]
 
 print(graph1)
@@ -47,3 +47,6 @@ print('\nDAG:',end='')
 print(algo.DAGMinDist(dag1,0))
 print('\nDjikstra:',end='')
 print(algo.djikstraBST(dag1,0))
+
+print('\nMaxFlow:',end='')
+print(algo.fordFulkerson(maxFlowTest,0,3))

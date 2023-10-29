@@ -296,3 +296,71 @@ def djikstraBST(graph,startV):
                 pq.add((v,dist[v]))
     return dist
 
+#Matching algorithms:
+#We're gonna use ford-fulkerson:
+def residual(graph):
+    gr = [[] for _ in range(len(graph))]
+    
+    for i in range(len(graph)):
+        for (u,p) in graph[i]:
+            gr[i].append((u,p,False))
+            
+    for v in range(len(gr)):
+        for (u,_,_) in gr[v]:
+            gr[u].append((v,0,True))
+    
+    return gr
+
+#we're gonna use BFS to find the path from start to end:
+def bfsPath(graph,start,end):
+    #Normal BFS:
+    queue = [start]
+    visited = [False] * len(graph)
+    visited[start] = True 
+    #We're gonna use this for the path
+    path = [None] * len(graph)
+    minWeight = 999999
+    #starting bfs:
+    while queue:
+        w = queue.pop(0)
+        for (u,p,_) in graph[w]:
+            if not visited[u] and p>0:
+                visited[u] = True
+                queue.append(u)
+                path[u] = (w,p)
+   
+    #getting the shortest path
+    shortestPath = []
+    if path[end] is not None:
+        curr = end
+        while curr != start:
+            (v,p) = path[curr]
+            minWeight = p if p<minWeight else minWeight
+            shortestPath.insert(0,(curr,p))
+            curr = v
+        shortestPath.insert(0,(start,0))
+    return shortestPath, minWeight
+
+def fordFulkerson(graph,start,end):
+    gr = residual(graph)
+    fmax=0
+    oldPath=[]
+    while True:
+        path, f = bfsPath(gr, start, end)
+        #if the path hasn't change we have the max flow
+        if oldPath==path: break
+        for i in gr:
+            for v in i:
+                weight = v[1]
+                weight+= f if v[2] else -f
+                v = (v[0],weight,v[2])
+        fmax+=f
+        oldPath = path
+    return fmax          
+        
+        
+    
+
+
+
+
