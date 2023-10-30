@@ -256,28 +256,39 @@ def bfsMinDistance(graph,startV,endV):
 #Min Distance for DAG's (Directed Acyclic Graph) pondered:
 #we use a topologic ordenation of the vertices in this one, so
 def topologicOrd(graph):
-    stack=[0]
     visited=[False]*len(graph)
-    visited[0]=True
     topOrd=[]
-    while stack:
-        w=stack.pop()
-        topOrd.append(w)
-        for (v,p) in graph[w]:
-            if not visited[v]:
-                stack.append(v)
-                visited[v]=True
+    for i in range(len(graph)):
+        visited[i]=True
+        queue=[i]
+        if i not in topOrd:
+            topOrd.append(i)
+        while queue:
+            w=queue.pop(0)
+            for (v,p) in graph[w]:
+                if not visited[v]:
+                    queue.append(v)
+                    topOrd.append(v)
+                    visited[v]=True
     return topOrd
 
 def DAGMinDist(graph,startV):
     dist = [999999]*len(graph)
     ordTop = topologicOrd(graph)
-    dist[startV] = 0;
+    dist[startV] = 0
     for u in ordTop:
         for (v,p) in graph[u]:
             dist[v] = dist[u]+p if dist[u]+p < dist[v] else dist[v]
     return dist
 
+#Without the topologic order
+def DAGTest(graph,start):
+    dist = [99999]*len(graph)
+    dist[start] = 0
+    for u in range(len(graph)):
+        for (v,p) in graph[u]:
+            dist[v]=dist[u]+p if dist[u]+p < dist[v] else dist[v]
+    return dist
 #Djikstra implemented using a BST:
 def djikstraBST(graph,startV):
     dist = [999999]*len(graph)
